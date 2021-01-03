@@ -1,22 +1,21 @@
 import React from 'react';
-import { Table } from 'antd'
-import { connect } from 'umi'
+import { Table } from 'antd';
+import { connect } from 'umi';
 
 const mapStateToProps = (state: any) => {
-  console.log(state)
-  const { users } = state
+  console.log(state);
+  const { users } = state;
   return {
-    users
-  }
-}
+    users: users.list,
+  };
+};
 
 const Index = (props) => {
-  
   const columns = [
     {
       title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'userName',
+      key: 'userName',
     },
     {
       title: '年龄',
@@ -24,14 +23,14 @@ const Index = (props) => {
       key: 'age',
     },
     {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
+      title: '性别',
+      dataIndex: 'sex',
+      key: 'sex',
     },
   ];
-  const { users } = props
+  const { users } = props;
 
-  return <Table dataSource={users} columns={columns} />
-}
+  return <Table key="userId" dataSource={users} columns={columns} />;
+};
 
-export default connect(mapStateToProps)(Index)
+export default connect(mapStateToProps)(Index);
