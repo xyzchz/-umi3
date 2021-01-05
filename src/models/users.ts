@@ -1,14 +1,16 @@
 import { Effect, ImmerReducer, Reducer, Subscription } from 'umi';
-import { getUserList } from '@/service/serviceApi';
+import { getUserList, patchUser } from '@/service/serviceApi';
 
 interface UserModelType {
   namespace: 'users';
   state: {};
   reducers: {
     getList: Reducer;
+    editUser: Reducer;
   };
   effects: {
     getRemote: Effect;
+    edit: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -26,10 +28,33 @@ const UserModel: UserModelType = {
         payload: data,
       });
     },
+    *edit(action, { put, call }) {
+      const data = yield call(patchUser, action.payload);
+      yield put({
+        type: 'editUser',
+        payload: data,
+      });
+      return data;
+    },
   },
   reducers: {
     getList(state, action) {
       return { state, list: action.payload };
+    },
+    editUser(state, action) {
+      const { payload } = action;
+      const { list } = state;
+      const index = list.findIndex((item) => item.userId === payload.userId);
+      // if (index === -1) return
+      if (!list[index]) return;
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...list[index], ...payload },
+          ...list.slice(index + 1),
+        ],
+      };
     },
     // 启用 immer 之后
     // save(state, action) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Table, Modal } from 'antd';
+import { Table, Modal, message } from 'antd';
 import { connect } from 'umi';
+import { patchUser } from '@/service/serviceApi';
 import UserModal from './components/userModal';
 
 const mapStateToProps = (state: any) => {
@@ -49,6 +50,21 @@ const Index = (props) => {
     setModalVisible(false);
   };
 
+  const onFinish = (values) => {
+    closeHandler();
+    props
+      .dispatch({
+        type: 'users/edit',
+        payload: {
+          ...values,
+          userId: record.userId,
+        },
+      })
+      .then((res) => {
+        message.success('修改成功');
+      });
+  };
+
   return (
     <>
       <Table rowKey="userId" dataSource={users} columns={columns} />
@@ -56,6 +72,7 @@ const Index = (props) => {
         visible={modalVisible}
         closeHandler={closeHandler}
         record={record}
+        onFinish={onFinish}
         visibleHandler={visibleHandler}
       />
     </>
