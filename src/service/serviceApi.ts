@@ -5,4 +5,9 @@ export const getUserList = async () => {
   return data;
 };
 
+export const patchUser = async (params) => {
+  const data = await request.patch('api/user', { data: params });
+  return data;
+};
+
 // http://127.0.0.1:7002
