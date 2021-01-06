@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Modal, Button, Select, message } from 'antd';
+import { getErrorTest } from '@/service/serviceApi';
 
 const { Option } = Select;
 
@@ -27,10 +28,14 @@ const UserModal = (props: any) => {
       });
   };
 
+  getErrorTest().then((data) => {
+    console.log(data);
+  });
+
   return (
     <>
       <Modal
-        title={props.record? "编辑用户": '添加用户'}
+        title={props.record ? '编辑用户' : '添加用户'}
         visible={props.visible}
         onOk={() => form.submit()}
         onCancel={props.closeHandler}

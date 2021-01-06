@@ -6,8 +6,10 @@ import UserModal from './components/userModal';
 
 const mapStateToProps = (state: any) => {
   const { users } = state;
+  console.log(state);
   return {
     users: users.list,
+    listLoading: state.loading.models.users,
   };
 };
 
@@ -47,7 +49,7 @@ const Index = (props) => {
   };
 
   const addHandler = () => {
-    setRecord(undefined)
+    setRecord(undefined);
     setModalVisible(true);
   };
 
@@ -63,32 +65,39 @@ const Index = (props) => {
     closeHandler();
     if (record) {
       props
-      .dispatch({
-        type: 'users/edit',
-        payload: {
-          ...values,
-          userId: record.userId,
-        },
-      })
-      .then((res) => {
-        message.success('修改成功');
-      });
+        .dispatch({
+          type: 'users/edit',
+          payload: {
+            ...values,
+            userId: record.userId,
+          },
+        })
+        .then((res) => {
+          message.success('修改成功');
+        });
     } else {
       props
-      .dispatch({
-        type: 'users/add',
-        payload: values
-      })
-      .then((res) => {
-        message.success('添加成功');
-      });
+        .dispatch({
+          type: 'users/add',
+          payload: values,
+        })
+        .then((res) => {
+          message.success('添加成功');
+        });
     }
   };
 
   return (
     <>
-      <Button type='primary' onClick={addHandler}>添加用户</Button>
-      <Table rowKey="userId" dataSource={users} columns={columns} />
+      <Button type="primary" onClick={addHandler}>
+        添加用户
+      </Button>
+      <Table
+        rowKey="userId"
+        dataSource={users}
+        columns={columns}
+        loading={props.listLoading}
+      />
       <UserModal
         visible={modalVisible}
         closeHandler={closeHandler}
