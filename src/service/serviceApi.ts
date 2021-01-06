@@ -10,4 +10,9 @@ export const patchUser = async (params) => {
   return data;
 };
 
+export const postUser = async (params) => {
+  const data = await request.post('api/user', { data: params });
+  return data;
+};
+
 // http://127.0.0.1:7002

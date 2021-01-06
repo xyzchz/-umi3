@@ -9,7 +9,11 @@ const UserModal = (props: any) => {
   const { record } = props;
 
   useEffect(() => {
-    form.setFieldsValue(props.record);
+    if (props.record) {
+      form.setFieldsValue(props.record);
+    } else {
+      form.resetFields();
+    }
   }, [props.visible]);
 
   const onFinishFailed = (errorInfo: any) => {
@@ -26,7 +30,7 @@ const UserModal = (props: any) => {
   return (
     <>
       <Modal
-        title="编辑用户"
+        title={props.record? "编辑用户": '添加用户'}
         visible={props.visible}
         onOk={() => form.submit()}
         onCancel={props.closeHandler}

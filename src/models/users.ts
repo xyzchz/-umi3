@@ -1,5 +1,5 @@
 import { Effect, ImmerReducer, Reducer, Subscription } from 'umi';
-import { getUserList, patchUser } from '@/service/serviceApi';
+import { getUserList, patchUser, postUser } from '@/service/serviceApi';
 
 interface UserModelType {
   namespace: 'users';
@@ -11,6 +11,7 @@ interface UserModelType {
   effects: {
     getRemote: Effect;
     edit: Effect;
+    add: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -33,6 +34,13 @@ const UserModel: UserModelType = {
       yield put({
         type: 'editUser',
         payload: data,
+      });
+      return data;
+    },
+    *add(action, { put, call }) {
+      const data = yield call(postUser, action.payload);
+      yield put({
+        type: 'getRemote'
       });
       return data;
     },

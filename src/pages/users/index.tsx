@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Modal, message } from 'antd';
+import { Table, Modal, message, Button } from 'antd';
 import { connect } from 'umi';
 import { patchUser } from '@/service/serviceApi';
 import UserModal from './components/userModal';
@@ -32,13 +32,22 @@ const Index = (props) => {
     {
       title: 'Action',
       dataIndex: 'action',
-      render: (text, record) => <a onClick={() => editHandler(record)}>edit</a>,
+      render: (text, record) => (
+        <>
+          <a onClick={() => editHandler(record)}>edit</a>
+        </>
+      ),
     },
   ];
   const { users } = props;
 
   const editHandler = (record) => {
     setRecord(record);
+    setModalVisible(true);
+  };
+
+  const addHandler = () => {
+    setRecord(undefined)
     setModalVisible(true);
   };
 
@@ -52,7 +61,8 @@ const Index = (props) => {
 
   const onFinish = (values) => {
     closeHandler();
-    props
+    if (record) {
+      props
       .dispatch({
         type: 'users/edit',
         payload: {
@@ -63,10 +73,21 @@ const Index = (props) => {
       .then((res) => {
         message.success('修改成功');
       });
+    } else {
+      props
+      .dispatch({
+        type: 'users/add',
+        payload: values
+      })
+      .then((res) => {
+        message.success('添加成功');
+      });
+    }
   };
 
   return (
     <>
+      <Button type='primary' onClick={addHandler}>添加用户</Button>
       <Table rowKey="userId" dataSource={users} columns={columns} />
       <UserModal
         visible={modalVisible}
