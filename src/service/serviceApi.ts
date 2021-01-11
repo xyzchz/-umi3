@@ -32,8 +32,8 @@ request.interceptors.response.use(async (response, options) => {
   return response;
 });
 
-export const getUserList = async () => {
-  const data = await request.get('/user');
+export const getUserList = async (params) => {
+  const data = await request.get('/user', { params });
   return data;
 };
 

@@ -40,7 +40,7 @@ const UserModel: UserModelType = {
     *add(action, { put, call }) {
       const data = yield call(postUser, action.payload);
       yield put({
-        type: 'getRemote'
+        type: 'getRemote',
       });
       return data;
     },
@@ -73,9 +73,9 @@ const UserModel: UserModelType = {
     setup({ dispatch, history }) {
       history.listen((location, action) => {
         if (location.pathname === '/users') {
-          dispatch({
-            type: 'getRemote',
-          });
+          // dispatch({
+          //   type: 'getRemote',
+          // });
         }
       });
     },

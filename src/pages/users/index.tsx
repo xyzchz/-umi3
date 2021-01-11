@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Table, Modal, message, Button } from 'antd';
 import { connect } from 'umi';
-import { patchUser } from '@/service/serviceApi';
+import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
+import { patchUser, getUserList } from '@/service/serviceApi';
 import UserModal from './components/userModal';
 
 const mapStateToProps = (state: any) => {
@@ -13,12 +16,18 @@ const mapStateToProps = (state: any) => {
   };
 };
 
+type Item = {
+  title: string;
+  dataIndex: string;
+  render: (text: any, record: any) => any;
+};
+
 const Index = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [record, setRecord] = useState(undefined);
 
-  const columns = [
+  const columns: ProColumns<Item>[] = [
     {
       title: '姓名',
       dataIndex: 'userName',
@@ -87,16 +96,49 @@ const Index = (props) => {
     }
   };
 
+  const requestHandler = async ({
+    pageSize,
+    current,
+  }: {
+    pageSize: number;
+    current: number;
+  }) => {
+    const results = await getUserList({ pageSize, current });
+    return {
+      data: results,
+      // success 请返回 true，
+      // 不然 table 会停止解析数据，即使有数据
+      success: true,
+      // 不传会使用 data 的长度，如果是分页一定要传
+      total: results.length,
+    };
+  };
+
   return (
     <>
-      <Button type="primary" onClick={addHandler}>
-        添加用户
-      </Button>
-      <Table
-        rowKey="userId"
-        dataSource={users}
+      <ProTable<Item>
         columns={columns}
-        loading={props.listLoading}
+        request={requestHandler}
+        editable={{
+          type: 'multiple',
+        }}
+        rowKey="userId"
+        search={false}
+        pagination={{
+          pageSize: 5,
+        }}
+        dateFormatter="string"
+        headerTitle="高级表格"
+        toolBarRender={() => [
+          <Button
+            key="button"
+            icon={<PlusOutlined />}
+            onClick={addHandler}
+            type="primary"
+          >
+            新建
+          </Button>,
+        ]}
       />
       <UserModal
         visible={modalVisible}
