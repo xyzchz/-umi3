@@ -20,13 +20,19 @@ interface UserModelType {
 
 const UserModel: UserModelType = {
   namespace: 'users',
-  state: {},
+  state: {
+    pageInfo: {
+      total: 0,
+      page: 1,
+      pageSize: 10,
+    },
+  },
   effects: {
     *getRemote(action, { put, call }) {
-      const data = yield call(getUserList);
+      const data = yield call(getUserList, action.payload);
       yield put({
         type: 'getList',
-        payload: data,
+        payload: data || [],
       });
     },
     *edit(action, { put, call }) {
@@ -47,7 +53,9 @@ const UserModel: UserModelType = {
   },
   reducers: {
     getList(state, action) {
-      return { state, list: action.payload };
+      const { items } = action.payload;
+      if (!items || items.length === 0) return state;
+      return { ...state, ...action.payload };
     },
     editUser(state, action) {
       const { payload } = action;
@@ -73,9 +81,13 @@ const UserModel: UserModelType = {
     setup({ dispatch, history }) {
       history.listen((location, action) => {
         if (location.pathname === '/users') {
-          // dispatch({
-          //   type: 'getRemote',
-          // });
+          dispatch({
+            type: 'getRemote',
+            payload: {
+              offset: 0,
+              limit: 10,
+            },
+          });
         }
       });
     },

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Modal, Button, Select, message } from 'antd';
-import { getErrorTest } from '@/service/serviceApi';
 
 const { Option } = Select;
 
@@ -27,10 +26,6 @@ const UserModal = (props: any) => {
         age: (Math.random() * 10).toFixed(0),
       });
   };
-
-  getErrorTest().then((data) => {
-    console.log(data);
-  });
 
   return (
     <>

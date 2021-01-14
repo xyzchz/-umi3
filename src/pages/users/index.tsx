@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Modal, message, Button } from 'antd';
+import { Table, Modal, message, Button, Pagination } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -11,8 +11,11 @@ const mapStateToProps = (state: any) => {
   const { users } = state;
   console.log(state);
   return {
-    users: users.list,
+    users: users.items,
     listLoading: state.loading.models.users,
+    total: users.pageInfo.total,
+    page: users.pageInfo.page,
+    pageSize: users.pageInfo.pageSize,
   };
 };
 
@@ -114,19 +117,30 @@ const Index = (props) => {
     };
   };
 
+  const pageChange = (pageNumber: number, pageSize: number = 10) => {
+    props.dispatch({
+      type: 'users/getRemote',
+      payload: {
+        limit: pageSize,
+        offset: (pageNumber - 1) * pageSize,
+      },
+    });
+  };
+
+  const { total, pageSize, page, listLoading } = props;
+
   return (
     <>
       <ProTable<Item>
         columns={columns}
-        request={requestHandler}
+        dataSource={users}
         editable={{
           type: 'multiple',
         }}
         rowKey="userId"
         search={false}
-        pagination={{
-          pageSize: 5,
-        }}
+        pagination={false}
+        loading={listLoading}
         dateFormatter="string"
         headerTitle="高级表格"
         toolBarRender={() => [
@@ -139,6 +153,12 @@ const Index = (props) => {
             新建
           </Button>,
         ]}
+      />
+      <Pagination
+        pageSize={pageSize}
+        total={total}
+        current={page}
+        onChange={pageChange}
       />
       <UserModal
         visible={modalVisible}
