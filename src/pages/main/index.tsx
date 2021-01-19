@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CSSModules from 'react-css-modules';
 import { history } from 'umi';
 import styles from './index.less';
 import bg1 from '@/asset/img/sky1.jpg';
 import img from '@/asset/img/Frame 2.png';
+
+type ReactEle = {
+  styleName: string;
+};
 
 const Index = () => {
   const [left, setLeft] = useState(0);
@@ -16,14 +20,23 @@ const Index = () => {
 
   const [isOver, setIsOver] = useState(false);
 
+  useEffect(() => {
+    setIsOver(false);
+    window.location.href = `#img${active}`;
+  }, [firstImg, secImg]);
+
   const selectOn = (e) => {
     const id = Number(e.currentTarget.getAttribute('id'));
     setTimeout(() => {
       setActive(id);
-      setIsOver(false);
-      window.location.href = '#img0';
+      const oldImgName = `img${active}`;
+      if (oldImgName === firstImg) {
+        setSecImg(`img${id}`);
+      } else {
+        setFirstImg(`img${id}`);
+      }
     }, 500);
-    if (id > 1) return setLeft((id - 1) * 272);
+    if (id > 1) return setLeft((id - 1) * 222);
     setLeft(0);
   };
 
@@ -33,8 +46,18 @@ const Index = () => {
 
   return (
     <div styleName="title">
-      <img styleName="bg" id={secImg} src={img} alt="错误" />
-      <img styleName="bg" id={firstImg} src={bg1} alt="错误" />
+      <img
+        id={secImg}
+        styleName={secImg === `img${active}` ? 'bg zoomIn' : 'bg'}
+        src={img}
+        alt="错误"
+      />
+      <img
+        id={firstImg}
+        styleName={firstImg === `img${active}` ? 'bg zoomIn' : 'bg'}
+        src={bg1}
+        alt="错误"
+      />
       <div
         styleName={isOver ? 'container over' : 'container'}
         onMouseOver={() => {
@@ -42,50 +65,19 @@ const Index = () => {
         }}
         onMouseLeave={resetLeft}
       >
-        <div styleName="longTabs" style={{ marginLeft: `-${left}px` }}>
-          <div styleName="shadow" />
-          <img
-            id="0"
-            styleName={active === 0 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
-          <img
-            id="1"
-            styleName={active === 1 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
-          <img
-            id="2"
-            styleName={active === 2 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
-          <img
-            id="3"
-            styleName={active === 3 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
-          <img
-            id="4"
-            styleName={active === 4 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
-          <img
-            id="5"
-            styleName={active === 5 ? 'active' : ''}
-            onClick={selectOn}
-            src={img}
-            alt="错误"
-          />
+        <div styleName="outShadowContainer">
+          <div styleName="outShadow" />
+        </div>
+        <div styleName="longTabsContainer">
+          <div styleName="longTabs" style={{ marginLeft: `-${left}px` }}>
+            <div styleName="shadow" />
+            <img id="0" onClick={selectOn} src={img} alt="错误" />
+            <img id="1" onClick={selectOn} src={img} alt="错误" />
+            <img id="2" onClick={selectOn} src={img} alt="错误" />
+            <img id="3" onClick={selectOn} src={img} alt="错误" />
+            <img id="4" onClick={selectOn} src={img} alt="错误" />
+            <img id="5" onClick={selectOn} src={img} alt="错误" />
+          </div>
         </div>
       </div>
     </div>

@@ -24,15 +24,34 @@
   top: calc((100vh - 340px) / 2);
   transition: all 0.5s ease;
   left: 90vw;
-  overflow: hidden;
+  // overflow: hidden;
   cursor: pointer;
+  .outShadowContainer {
+    position: absolute;
+    left: -100px;
+    height: 340px;
+    width: 100px;
+    overflow: hidden;
+    .outShadow {
+      position: absolute;
+      height: 340px;
+      width: 200px;
+      box-shadow: inset -200px 0 100px -100px rgb(102, 99, 99);
+      transition: all 0.5s ease;
+      filter: blur(10px);
+    }
+  }
+  .longTabsContainer {
+    overflow: hidden;
+  }
   .longTabs {
+    overflow: hidden;
     height: 340px;
     width: 3000px;
     transition: all 0.5s ease;
     margin-left: 0;
     .shadow {
-      box-shadow: inset 100px 0 60px -60px rgb(212, 212, 212);
+      // box-shadow: inset 100px 0 60px -60px rgb(212, 212, 212);
       position: absolute;
       left: 0;
       top: 0;
@@ -47,14 +66,34 @@
       cursor: pointer;
       transition: all 0.5s ease;
     }
-    .active {
-      transform: scale(20, 20);
-    }
   }
+}
+
+.none {
+  display: none;
+}
+
+.zoomIn {
+  animation: ZoomIn 0.5s 1 0.15s normal both;
 }
 
 .over:hover {
   transform: translate(-70vw, 0);
+}
+
+@keyframes ZoomIn {
+  from {
+    // transform: scale(0, 0);
+    border-radius: 100%;
+    opacity: 0;
+    filter: blur(100px);
+  }
+  to {
+    // transform: scale(1, 1);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 0;
+  }
 }
 
 @keyframes TabsMoveIn {
